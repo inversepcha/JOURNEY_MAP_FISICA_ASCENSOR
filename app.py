@@ -121,6 +121,8 @@ fuerza = masa_total * (g + aceleracion)
 
 energia_potencial = masa_total * g * altura
 
+energia_cinetica = 0.5 * masa_total * (velocidad ** 2)
+
 trabajo = fuerza * altura
 
 tiempo = altura / velocidad if velocidad > 0 else 1
@@ -140,8 +142,8 @@ def card_html(titulo, valor, unidad, color="white"):
         background:linear-gradient(180deg,#08142c,#07101f);
         border:1px solid #183a63;
         border-radius:18px;
-        width:95px;
-        height:90px;
+        width:88px;
+        height:88px;
         padding:6px;
 
         display:flex;
@@ -224,6 +226,7 @@ with left:
         F = m(g + a)<br>
         v = at<br>
         Ep = mgh<br>
+        Ec = 1/2 mv²<br>
         P = W/t
     </div>
     """, unsafe_allow_html=True)
@@ -240,7 +243,7 @@ with right:
 
 <div style="
     display:flex;
-    gap:10px;
+    gap:8px;
     align-items:flex-start;
     flex-wrap:wrap;
     margin-top:-6px;
@@ -249,7 +252,8 @@ with right:
     {card_html("⚖️ Masa", masa_total, "kg")}
     {card_html("🧲 Fuerza", int(fuerza), "N")}
     {card_html("🏢 Altura", f"{altura:.1f}", "m")}
-    {card_html("⚡ Energía", int(energia_potencial), "J")}
+    {card_html("⚡ Potencial", int(energia_potencial), "J")}
+    {card_html("🏃 Cinética", int(energia_cinetica), "J")}
     {card_html("🔋 Potencia", f"{potencia:.2f}", "kW")}
     {card_html("🔧 Trabajo", int(trabajo), "J")}
     {card_html("🪫 Consumo", int(consumo), "J")}
@@ -261,7 +265,7 @@ with right:
 </html>
 """
 
-    components.html(cards_html, height=145)
+    components.html(cards_html, height=115)
 
 # =========================================================
 # ESPACIO
@@ -315,10 +319,6 @@ with col2:
 
     piso_px = altura_total_px / cantidad_pisos
 
-    # =====================================================
-    # POSICION
-    # =====================================================
-
     ascensor_y = (piso_actual - 1) * piso_px
 
     pisos_html = ""
@@ -369,39 +369,28 @@ with col2:
 
     {pisos_html}
 
-    <!-- DISPLAY -->
-
     <div style="
         position:absolute;
         top:18px;
         left:50%;
         transform:translateX(-50%);
-
         background:black;
         color:#22c55e;
-
         font-size:28px;
         font-weight:900;
-
         padding:6px 18px;
-
         border-radius:12px;
-
         border:2px solid #22c55e;
-
         box-shadow:0 0 15px #22c55e;
     ">
         {piso_actual}
     </div>
-
-    <!-- TEXTO -->
 
     <div style="
         position:absolute;
         top:78px;
         width:100%;
         text-align:center;
-
         color:#cbd5e1;
         font-size:18px;
         font-weight:700;
@@ -411,60 +400,38 @@ with col2:
 
     </div>
 
-    <!-- ASCENSOR -->
-
     <div style="
         position:absolute;
-
         left:20px;
         bottom:{ascensor_y + 10}px;
-
         width:300px;
         height:{piso_px - 20}px;
-
         background:#16a34a;
-
         animation: glow 2s infinite alternate;
-
         border-radius:18px;
-
-        transition:
-            all 2.5s cubic-bezier(0.22, 1, 0.36, 1);
-
+        transition: all 2.5s cubic-bezier(0.22, 1, 0.36, 1);
         will-change: bottom;
-
         box-shadow:0 0 30px #22c55e;
-
         overflow:hidden;
-
         border:2px solid rgba(255,255,255,0.15);
     ">
-
-        <!-- PUERTA IZQUIERDA -->
 
         <div style="
             position:absolute;
             left:0;
             top:0;
-
             width:50%;
             height:100%;
-
             background:#16a34a;
-
             border-right:2px solid #052e16;
         "></div>
-
-        <!-- PUERTA DERECHA -->
 
         <div style="
             position:absolute;
             right:0;
             top:0;
-
             width:50%;
             height:100%;
-
             background:#16a34a;
         "></div>
 
@@ -577,11 +544,19 @@ aceleracion_t = np.full_like(t, aceleracion)
 
 energia_t = masa_total * g * altura_t
 
+energia_cinetica_t = 0.5 * masa_total * (velocidad_t ** 2)
+
 potencia_t = fuerza * velocidad_t / 1000
 
 trabajo_t = fuerza * altura_t
 
 consumo_t = trabajo_t / (eficiencia / 100)
+
+eficiencia_t = np.full_like(t, eficiencia)
+
+# =========================================================
+# FILA 1
+# =========================================================
 
 g3, g4 = st.columns(2)
 
@@ -631,6 +606,10 @@ with g4:
 
     st.plotly_chart(fig, use_container_width=True)
 
+# =========================================================
+# FILA 2
+# =========================================================
+
 g5, g6 = st.columns(2)
 
 with g5:
@@ -669,6 +648,164 @@ with g6:
 
     fig.update_layout(
         title="Energía potencial vs Tiempo",
+        xaxis_title="Tiempo (s)",
+        yaxis_title="Energía (J)",
+        height=420,
+        paper_bgcolor="#07152d",
+        plot_bgcolor="#07152d",
+        font=dict(color="white")
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+# =========================================================
+# FILA 3
+# =========================================================
+
+g7, g8 = st.columns(2)
+
+with g7:
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=t,
+        y=energia_cinetica_t,
+        mode='lines',
+        name='Energía cinética'
+    ))
+
+    fig.update_layout(
+        title="Energía cinética vs Tiempo",
+        xaxis_title="Tiempo (s)",
+        yaxis_title="Energía (J)",
+        height=420,
+        paper_bgcolor="#07152d",
+        plot_bgcolor="#07152d",
+        font=dict(color="white")
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+with g8:
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=t,
+        y=potencia_t,
+        mode='lines',
+        name='Potencia'
+    ))
+
+    fig.update_layout(
+        title="Potencia del motor vs Tiempo",
+        xaxis_title="Tiempo (s)",
+        yaxis_title="Potencia (kW)",
+        height=420,
+        paper_bgcolor="#07152d",
+        plot_bgcolor="#07152d",
+        font=dict(color="white")
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+# =========================================================
+# FILA 4
+# =========================================================
+
+g9, g10 = st.columns(2)
+
+with g9:
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=t,
+        y=trabajo_t,
+        mode='lines',
+        name='Trabajo'
+    ))
+
+    fig.update_layout(
+        title="Trabajo mecánico vs Tiempo",
+        xaxis_title="Tiempo (s)",
+        yaxis_title="Trabajo (J)",
+        height=420,
+        paper_bgcolor="#07152d",
+        plot_bgcolor="#07152d",
+        font=dict(color="white")
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+with g10:
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=t,
+        y=consumo_t,
+        mode='lines',
+        name='Consumo'
+    ))
+
+    fig.update_layout(
+        title="Consumo energético vs Tiempo",
+        xaxis_title="Tiempo (s)",
+        yaxis_title="Consumo (J)",
+        height=420,
+        paper_bgcolor="#07152d",
+        plot_bgcolor="#07152d",
+        font=dict(color="white")
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+# =========================================================
+# FILA 5
+# =========================================================
+
+g11, g12 = st.columns(2)
+
+with g11:
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=t,
+        y=eficiencia_t,
+        mode='lines',
+        name='Eficiencia'
+    ))
+
+    fig.update_layout(
+        title="Eficiencia del motor",
+        xaxis_title="Tiempo (s)",
+        yaxis_title="Eficiencia (%)",
+        height=420,
+        paper_bgcolor="#07152d",
+        plot_bgcolor="#07152d",
+        font=dict(color="white")
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+with g12:
+
+    energia_total_t = energia_t + energia_cinetica_t
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=t,
+        y=energia_total_t,
+        mode='lines',
+        name='Energía total'
+    ))
+
+    fig.update_layout(
+        title="Energía total del sistema",
         xaxis_title="Tiempo (s)",
         yaxis_title="Energía (J)",
         height=420,
