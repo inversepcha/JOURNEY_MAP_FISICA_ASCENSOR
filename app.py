@@ -142,8 +142,8 @@ def card_html(titulo, valor, unidad, color="white"):
         background:linear-gradient(180deg,#08142c,#07101f);
         border:1px solid #183a63;
         border-radius:18px;
-        width:88px;
-        height:88px;
+        width:95px;
+        height:90px;
         padding:6px;
 
         display:flex;
@@ -209,44 +209,157 @@ Simulación Física
 # FORMULAS + TARJETAS
 # =========================================================
 
-left, right = st.columns([1.1,5])
+left, right = st.columns([1,1])
 
 with left:
 
-    st.markdown("""
+    formulas_html = """
     <div style="
         padding-top:8px;
         padding-left:12px;
-        font-size:18px;
-        line-height:2.6;
-        font-weight:800;
-        white-space:nowrap;
+        color:white;
+        font-family:Arial;
     ">
-        F − mg = ma<br>
-        F = m(g + a)<br>
-        v = at<br>
-        Ep = mgh<br>
-        Ec = 1/2 mv²<br>
-        P = W/t
+
+        <div style="
+            margin-bottom:22px;
+            line-height:1.4;
+        ">
+            <div style="
+                color:#60a5fa;
+                font-size:14px;
+                font-weight:700;
+                margin-bottom:4px;
+            ">
+                🔹 Segunda Ley de Newton
+            </div>
+
+            <div style="
+                font-size:28px;
+                font-weight:900;
+            ">
+                F − mg = ma
+            </div>
+        </div>
+
+        <div style="
+            margin-bottom:22px;
+            line-height:1.4;
+        ">
+            <div style="
+                color:#60a5fa;
+                font-size:14px;
+                font-weight:700;
+                margin-bottom:4px;
+            ">
+                🔹 Fuerza del Motor
+            </div>
+
+            <div style="
+                font-size:28px;
+                font-weight:900;
+            ">
+                F = m(g + a)
+            </div>
+        </div>
+
+        <div style="
+            margin-bottom:22px;
+            line-height:1.4;
+        ">
+            <div style="
+                color:#60a5fa;
+                font-size:14px;
+                font-weight:700;
+                margin-bottom:4px;
+            ">
+                🔹 Velocidad
+            </div>
+
+            <div style="
+                font-size:28px;
+                font-weight:900;
+            ">
+                v = at
+            </div>
+        </div>
+
+        <div style="
+            margin-bottom:22px;
+            line-height:1.4;
+        ">
+            <div style="
+                color:#60a5fa;
+                font-size:14px;
+                font-weight:700;
+                margin-bottom:4px;
+            ">
+                🔹 Energía Potencial
+            </div>
+
+            <div style="
+                font-size:28px;
+                font-weight:900;
+            ">
+                Ep = mgh
+            </div>
+        </div>
+
+        <div style="
+            margin-bottom:22px;
+            line-height:1.4;
+        ">
+            <div style="
+                color:#60a5fa;
+                font-size:14px;
+                font-weight:700;
+                margin-bottom:4px;
+            ">
+                🔹 Energía Cinética
+            </div>
+
+            <div style="
+                font-size:28px;
+                font-weight:900;
+            ">
+                Ec = 1/2 mv²
+            </div>
+        </div>
+
+        <div style="
+            margin-bottom:22px;
+            line-height:1.4;
+        ">
+            <div style="
+                color:#60a5fa;
+                font-size:14px;
+                font-weight:700;
+                margin-bottom:4px;
+            ">
+                🔹 Potencia Mecánica
+            </div>
+
+            <div style="
+                font-size:28px;
+                font-weight:900;
+            ">
+                P = W/t
+            </div>
+        </div>
+
     </div>
-    """, unsafe_allow_html=True)
+    """
 
-with right:
+    components.html(formulas_html, height=560)
 
-    cards_html = f"""
-<html>
+    st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
 
-<body style="
-    margin:0;
-    background:transparent;
-">
-
+cards_html = f"""
 <div style="
     display:flex;
     gap:8px;
     align-items:flex-start;
     flex-wrap:wrap;
-    margin-top:-6px;
 ">
 
     {card_html("⚖️ Masa", masa_total, "kg")}
@@ -260,12 +373,9 @@ with right:
     {card_html("✅ Eficiencia", f"{eficiencia}%", "%", "#22c55e")}
 
 </div>
-
-</body>
-</html>
 """
 
-    components.html(cards_html, height=115)
+components.html(cards_html, height=140)
 
 # =========================================================
 # ESPACIO
@@ -376,7 +486,7 @@ with col2:
         transform:translateX(-50%);
         background:black;
         color:#22c55e;
-        font-size:28px;
+        font-size:24px;
         font-weight:900;
         padding:6px 18px;
         border-radius:12px;
@@ -448,14 +558,24 @@ with col2:
 
 st.markdown("<div style='height:40px'></div>", unsafe_allow_html=True)
 
+#st.markdown("""
+#<h2 style="
+#font-size:42px;
+#font-weight:900;
+#margin-bottom:25px;
+#">
+#📊 Análisis Físico
+#</h2>
+#""", unsafe_allow_html=True)
+
 st.markdown("""
-<h2 style="
-font-size:42px;
+<h1 style="
+font-size:58px;
 font-weight:900;
 margin-bottom:25px;
 ">
-📊 Análisis Físico
-</h2>
+⚙️ Fenómenos físicos del sistema
+</h1>
 """, unsafe_allow_html=True)
 
 pisos = np.arange(1, cantidad_pisos + 1)
@@ -520,15 +640,15 @@ with g2:
 
 st.markdown("<div style='height:50px'></div>", unsafe_allow_html=True)
 
-st.markdown("""
-<h2 style="
-font-size:42px;
-font-weight:900;
-margin-bottom:25px;
-">
-⚙️ Fenómenos físicos del sistema
-</h2>
-""", unsafe_allow_html=True)
+#st.markdown("""
+#<h1 style="
+#font-size:58px;
+#font-weight:900;
+#margin-bottom:25px;
+#">
+#⚙️ Fenómenos físicos del sistema
+#</h1>
+#""", unsafe_allow_html=True)
 
 tiempo_total = altura / velocidad
 
