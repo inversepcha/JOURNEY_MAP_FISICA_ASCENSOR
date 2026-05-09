@@ -108,28 +108,12 @@ altura_piso = st.sidebar.slider(
 )
 
 # =========================================================
-# CALCULOS
+# CONSTANTES BASE
 # =========================================================
 
 g = 9.81
 
 masa_total = masa_ascensor + masa_personas
-
-altura = (cantidad_pisos - 1) * altura_piso
-
-fuerza = masa_total * (g + aceleracion)
-
-energia_potencial = masa_total * g * altura
-
-energia_cinetica = 0.5 * masa_total * (velocidad ** 2)
-
-trabajo = fuerza * altura
-
-tiempo = altura / velocidad if velocidad > 0 else 1
-
-potencia = (trabajo / tiempo) / 1000
-
-consumo = trabajo / (eficiencia / 100)
 
 # =========================================================
 # FUNCION TARJETAS
@@ -354,28 +338,6 @@ with left:
 
     st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
 
-cards_html = f"""
-<div style="
-    display:flex;
-    gap:8px;
-    align-items:flex-start;
-    flex-wrap:wrap;
-">
-
-    {card_html("⚖️ Masa", masa_total, "kg")}
-    {card_html("🧲 Fuerza", int(fuerza), "N")}
-    {card_html("🏢 Altura", f"{altura:.1f}", "m")}
-    {card_html("⚡ Potencial", int(energia_potencial), "J")}
-    {card_html("🏃 Cinética", int(energia_cinetica), "J")}
-    {card_html("🔋 Potencia", f"{potencia:.2f}", "kW")}
-    {card_html("🔧 Trabajo", int(trabajo), "J")}
-    {card_html("🪫 Consumo", int(consumo), "J")}
-    {card_html("✅ Eficiencia", f"{eficiencia}%", "%", "#22c55e")}
-
-</div>
-"""
-
-components.html(cards_html, height=140)
 
 # =========================================================
 # ESPACIO
@@ -405,10 +367,57 @@ with col1:
     """, unsafe_allow_html=True)
 
     piso_actual = st.radio(
-        "Seleccionar piso",
-        list(range(cantidad_pisos,0,-1)),
-        format_func=lambda x: f"Piso {x}"
-    )
+    "Seleccionar piso",
+    list(range(cantidad_pisos,0,-1)),
+    format_func=lambda x: f"Piso {x}"
+)
+
+# =========================================================
+# CALCULOS DINAMICOS SEGUN PISO
+# =========================================================
+
+altura = (piso_actual - 1) * altura_piso
+
+fuerza = masa_total * (g + aceleracion)
+
+energia_potencial = masa_total * g * altura
+
+energia_cinetica = 0.5 * masa_total * (velocidad ** 2)
+
+trabajo = fuerza * altura
+
+tiempo = altura / velocidad if velocidad > 0 else 1
+
+potencia = (trabajo / tiempo) / 1000 if tiempo > 0 else 0
+
+consumo = trabajo / (eficiencia / 100)
+
+# =========================================================
+# TARJETAS
+# =========================================================
+
+cards_html = f"""
+<div style="
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+    flex-wrap:wrap;
+">
+
+    {card_html("⚖️ Masa", masa_total, "kg")}
+    {card_html("🧲 Fuerza", int(fuerza), "N")}
+    {card_html("🏢 Altura", f"{altura:.1f}", "m")}
+    {card_html("⚡ Potencial", int(energia_potencial), "J")}
+    {card_html("🏃 Cinética", int(energia_cinetica), "J")}
+    {card_html("🔋 Potencia", f"{potencia:.2f}", "kW")}
+    {card_html("🔧 Trabajo", int(trabajo), "J")}
+    {card_html("🪫 Consumo", int(consumo), "J")}
+    {card_html("✅ Eficiencia", f"{eficiencia}%", "%", "#22c55e")}
+
+</div>
+"""
+
+components.html(cards_html, height=140)    
 
 # =========================================================
 # SIMULACION
